@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import './screens/complete_screen.dart';
 import 'package:todo_app/screens/progress_list_screen.dart';
 import './screens/todo_list_screen.dart';
 import './model/todo.dart';
 
+// https://dribbble.com/shots/16746779-Todoist-for-Android/attachments/11793617?mode=media
 void main() {
   runApp(const MyApp());
 }
@@ -19,6 +21,9 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // routes: {
+      //   '/': (context) => const MyHomePage(title: 'title'),
+      //   CompleteScreen.routeName: (context) =>  CompleteScreen(),
     );
   }
 }
@@ -37,12 +42,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late TextEditingController _controller;
 
-  List<Todo> get progressTodos {
+  List<Todo> get inProgressTodos {
     return _todoList.where((element) => element.isProgress).toList();
   }
 
-  List<Todo> get notProgress {
+  List<Todo> get todos {
     return _todoList.where((element) => element.isProgress == false).toList();
+  }
+
+  List<Todo> get doneTodos {
+    return _todoList.where((element) => element.isDone).toList();
   }
 
   @override
@@ -88,13 +97,21 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _onItemTapped(int index) {
+    if (index == 1) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => CompleteScreen(doneTodos)),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        toolbarHeight: 10,
+        toolbarHeight: 25,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
@@ -134,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               _todoList.isNotEmpty
                   ? TodoListScreen(
-                      notProgress,
+                      todos,
                       checkTodo,
                       deleteTodo,
                       moveProgress,
@@ -150,8 +167,23 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(
                 height: 10,
               ),
-              ProgressListScreen(progressTodos, checkTodo, deleteTodo)
+              ProgressListScreen(inProgressTodos, checkTodo, deleteTodo)
             ]),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.done),
+            label: 'Done',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
     );
   }

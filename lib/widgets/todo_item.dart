@@ -63,6 +63,7 @@ class TodoItem extends StatelessWidget {
           ]),
         ),
         PopupMenuButton(
+          constraints: const BoxConstraints.expand(width: 150, height: 100),
           onSelected: (value) {
             if (value == MoreOptions.Delete) {
               deleteTodo(id);
@@ -74,11 +75,21 @@ class TodoItem extends StatelessWidget {
             return [
               const PopupMenuItem(
                 value: MoreOptions.Progress,
-                child: Text('Move Progress'),
+                child: Text(
+                  'Move Progress',
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
               ),
               const PopupMenuItem(
                 value: MoreOptions.Delete,
-                child: Text('Delete'),
+                child: Text(
+                  'Delete',
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
               )
             ];
           },
